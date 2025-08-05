@@ -1,0 +1,166 @@
+package com.example.shoppingapp.presentation.cart.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.shoppingapp.R
+import com.example.shoppingapp.domain.model.CartItemModel
+
+
+@Composable
+fun CartItem(
+    index: Int,
+    cartItem: CartItemModel,
+    onIncrement: (CartItemModel) -> Unit,
+    onDecrement: (CartItemModel) -> Unit,
+    onRemove: (CartItemModel) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+    ) {
+
+        Text(
+            text = (index + 1).toString(),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.width(25.dp)
+                .border(
+                    width = 1.dp,
+                    color = Color.Gray,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            color = Color.Black
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+        AsyncImage(
+            model = cartItem.picUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .size(100.dp, 100.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
+            Text(
+                text = cartItem.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = "$${cartItem.price}",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = colorResource(R.color.midBrown)
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = cartItem.size,
+                color = colorResource(R.color.grey),
+                fontSize = 14.sp
+            )
+        }
+        Box(
+            modifier = Modifier.fillMaxHeight()
+        ) {
+
+            /*IconButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onClick = { onRemove(cartItem) }) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_remove),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(Color.Red)
+                )
+            }*/
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .background(Color.Gray.copy(alpha = 0.2f), shape = RoundedCornerShape(10.dp))
+                    .padding(2.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .size(28.dp)
+                        .background(
+                            colorResource(R.color.white), shape = RoundedCornerShape(8.dp)
+                        )
+                        .clickable {
+                            onDecrement(cartItem)
+                        }
+                ) {
+                    Text(
+                        text = "-",
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = cartItem.quantity.toString(),
+                    modifier = Modifier.width(25.dp),
+                )
+
+                Box(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .size(28.dp)
+                        .background(
+                            colorResource(R.color.white), shape = RoundedCornerShape(8.dp)
+                        )
+                        .clickable {
+                            onIncrement(cartItem)
+                        }
+                ) {
+                    Text(
+                        text = "+",
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+            }
+        }
+    }
+
+}

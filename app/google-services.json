@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "522112427009",
+    "firebase_url": "https://testing-3508d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "testing-3508d",
+    "storage_bucket": "testing-3508d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522112427009:android:abfa41aca02d8b6f078c00",
+        "android_client_info": {
+          "package_name": "com.example.shoppingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_3ucESv4o-MWxbB8gufKXQfv-Mefx0E0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

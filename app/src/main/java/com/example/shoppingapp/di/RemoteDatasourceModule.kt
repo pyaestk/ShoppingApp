@@ -1,0 +1,23 @@
+package com.example.shoppingapp.di
+
+import com.example.shoppingapp.data.remote.BannerRemoteDataSource
+import com.example.shoppingapp.data.remote.ItemRemoteDataSource
+import com.example.shoppingapp.data.remote.RemoteDatasource
+import com.google.firebase.database.FirebaseDatabase
+import org.koin.dsl.module
+
+val RemoteDatasourceModule = module {
+    single { FirebaseDatabase.getInstance() }
+
+    single {
+        RemoteDatasource(firebaseDatabase = get())
+    }
+
+    single {
+        ItemRemoteDataSource(firebaseDatabase = get())
+    }
+
+    single {
+        BannerRemoteDataSource(firebaseDatabase = get())
+    }
+}
