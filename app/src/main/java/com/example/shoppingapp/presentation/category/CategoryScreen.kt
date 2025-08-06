@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +76,6 @@ fun CategoryScreen(
                     columns = StaggeredGridCells.Fixed(2),
                     verticalItemSpacing = 8.dp,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                    modifier = Modifier.weight(1f),
                     content = {
                         items(screenState.items.size) { index ->
                             ProductItemByCategoryCard(
@@ -106,7 +106,7 @@ fun CategoryScreen(
 @Composable
 fun CategoryHeader(category: CategoryModel, onBackClick: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp).statusBarsPadding(),
     ){
         Image(
             painter = painterResource(R.drawable.back),

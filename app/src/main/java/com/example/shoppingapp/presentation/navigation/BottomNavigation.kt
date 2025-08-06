@@ -1,8 +1,5 @@
 package com.example.shoppingapp.presentation.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -19,15 +16,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.shoppingapp.R
 import com.example.shoppingapp.domain.model.CategoryModel
-import com.example.shoppingapp.domain.model.ItemModel
 import com.example.shoppingapp.presentation.cart.CartScreen
-import com.example.shoppingapp.presentation.cart.CartScreenEvent
 import com.example.shoppingapp.presentation.category.CategoryScreen
 import com.example.shoppingapp.presentation.detail.DetailScreen
 import com.example.shoppingapp.presentation.home.HomeScreen
@@ -52,6 +49,7 @@ fun BottomNavigation() {
         )
     }
     val backstackState = navController.currentBackStackEntryAsState().value
+
     var selectedItem by rememberSaveable {
         mutableStateOf(0)
     }
@@ -67,7 +65,7 @@ fun BottomNavigation() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (showBottomNav.value){
+            if (showBottomNav.value) {
                 BottomNavigationBar(
                     selectedItem = selectedItem,
                     items = items,
@@ -85,95 +83,119 @@ fun BottomNavigation() {
                 )
             }
 
-        },
+        }) { paddingValues ->
 
-    ) { paddingValues ->
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+        NavHost(
+            navController = navController,
+            startDestination = NavRoute.HomeScreen.route,
+            modifier = if (showBottomNav.value) {
+                Modifier.padding(paddingValues)
+            } else {
+                Modifier
+            }
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = NavRoute.HomeScreen.route,
+            composable(
+                NavRoute.HomeScreen.route,
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
             ) {
-                composable(
-                    NavRoute.HomeScreen.route,
-                ) {
-                    HomeScreen(
-                        navigateToDetail = { item ->
-                            navigateToDetails(
-                                navController = navController,
-                                product = item
-                            )
-                        },
-                        navigateToCategory = { category ->
-                            navigateToCategory(
-                                navController = navController,
-                                categoryModel = category
-                            )
-                        }
-                    )
-                    showBottomNav.value = true
-                }
-                composable(
-                    NavRoute.CartScreen.route,
-                ) {
-                    CartScreen()
-                    showBottomNav.value = true
-                }
-                composable(
-                    NavRoute.FavoriteScreen.route,
-                ) {
-                    Box(){
-
-                    }
-                    showBottomNav.value = true
-                }
-                composable(
-                    NavRoute.OrderScreen.route,
-                ) {
-                    Box(){
-
-                    }
-                    showBottomNav.value = true
-                }
-                composable(
-                    NavRoute.ProfileScreen.route,
-                    enterTransition = { defaultEnterTransition() },
-                    exitTransition = { defaultExitTransition() }
-                ) {
-                    Box(){
-
-                    }
-                    showBottomNav.value = true
-                }
-                composable(
-                    NavRoute.DetailScreen.route,
-                    enterTransition = { defaultEnterTransition() },
-                    exitTransition = { defaultExitTransition() },
-                    popExitTransition = { defaultPopExitTransition() },
-                    popEnterTransition = { defaultPopEnterTransition() }
-                ) {
-                    navController.previousBackStackEntry?.savedStateHandle?.get<ItemModel>("item")?.let { item ->
-                        DetailScreen(
-                            item = item,
-                            onBackClick = {
-                                navController.navigateUp()
-                            }
+                HomeScreen(
+                    navigateToDetail = { item ->
+                        navigateToDetails(
+                            navController = navController,
+                            itemId = item.id
+                        )
+                    },
+                    navigateToCategory = { category ->
+                        navigateToCategory(
+                            navController = navController,
+                            categoryModel = category
                         )
                     }
-                    showBottomNav.value = false
-                }
-                composable(
-                    NavRoute.CategoryScreen.route,
-                    enterTransition = { defaultEnterTransition() },
-                    exitTransition = { defaultExitTransition() },
-                    popExitTransition = { defaultPopExitTransition() },
-                    popEnterTransition = { defaultPopEnterTransition() }
+                )
+                showBottomNav.value = true
+            }
+            composable(
+                NavRoute.CartScreen.route,
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
                 ) {
-                    navController.previousBackStackEntry?.savedStateHandle?.get<CategoryModel>("category")?.let { category ->
+                CartScreen(
+                    onItemClick = { item ->
+                        navigateToDetails(
+                            navController = navController,
+                            itemId = item.itemId
+                        )
+                    }
+                )
+                showBottomNav.value = true
+            }
+            composable(
+                NavRoute.FavoriteScreen.route,
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+            ) {
+                Box() {
+
+                }
+                showBottomNav.value = true
+            }
+            composable(
+                NavRoute.OrderScreen.route,
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+            ) {
+                Box() {
+
+                }
+                showBottomNav.value = true
+            }
+            composable(
+                NavRoute.ProfileScreen.route,
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+            ) {
+                Box() {
+
+                }
+                showBottomNav.value = true
+            }
+            composable(
+                NavRoute.DetailScreen.route, // Use the route directly from NavRoute
+                arguments = listOf(navArgument("itemId") {
+                    type = NavType.IntType
+                }),
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+            ) { backStackEntry ->
+                val itemId = backStackEntry.arguments?.getInt("itemId") ?: return@composable
+                DetailScreen(
+                    itemId = itemId,
+                    onBackClick = { navController.navigateUp() }
+                )
+                showBottomNav.value = false
+            }
+            composable(
+                NavRoute.CategoryScreen.route,
+                enterTransition = { slideInHorizontally { it } + fadeIn() },
+                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+                ) {
+                navController.previousBackStackEntry?.savedStateHandle?.get<CategoryModel>("category")
+                    ?.let { category ->
                         CategoryScreen(
                             category = category,
                             onBackClick = {
@@ -182,28 +204,24 @@ fun BottomNavigation() {
                             onItemClick = { item ->
                                 navigateToDetails(
                                     navController = navController,
-                                    product = item
+                                    itemId = item.id
                                 )
                             }
 
                         )
                     }
-                    showBottomNav.value = false
-                }
+                showBottomNav.value = false
             }
         }
     }
 
+
 }
 
-private fun navigateToDetails(navController: NavController, product: ItemModel) {
-
-    navController.currentBackStackEntry?.savedStateHandle?.set(
-        key = "item",
-        value = product
-    )
-    navController.navigate(NavRoute.DetailScreen.route)
+private fun navigateToDetails(navController: NavController, itemId: Int) {
+    navController.navigate(NavRoute.DetailScreen.createRoute(itemId))
 }
+
 
 private fun navigateToCategory(navController: NavController, categoryModel: CategoryModel) {
     navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -216,31 +234,10 @@ private fun navigateToCategory(navController: NavController, categoryModel: Cate
 sealed class BottomNavItems(val route: String, val title: String, val icon: Int) {
     object Home : BottomNavItems(NavRoute.HomeScreen.route, "Home", icon = R.drawable.btn_1)
     object Cart : BottomNavItems(NavRoute.CartScreen.route, "Cart", icon = R.drawable.btn_2)
-    object Favorite : BottomNavItems(NavRoute.FavoriteScreen.route, "Favorite", icon = R.drawable.btn_3)
+    object Favorite :
+        BottomNavItems(NavRoute.FavoriteScreen.route, "Favorite", icon = R.drawable.btn_3)
+
     object Order : BottomNavItems(NavRoute.OrderScreen.route, "Order", icon = R.drawable.btn_4)
-    object Profile : BottomNavItems(NavRoute.ProfileScreen.route, "Profile", icon = R.drawable.btn_5)
+    object Profile :
+        BottomNavItems(NavRoute.ProfileScreen.route, "Profile", icon = R.drawable.btn_5)
 }
-
-fun defaultEnterTransition(): EnterTransition =
-    slideInHorizontally(
-        initialOffsetX = { fullWidth -> fullWidth },
-        animationSpec = tween(700)
-    ) + fadeIn(animationSpec = tween(700))
-
-fun defaultExitTransition(): ExitTransition =
-    slideOutHorizontally(
-        targetOffsetX = { fullWidth -> -fullWidth },
-        animationSpec = tween(700)
-    ) + fadeOut(animationSpec = tween(700))
-
-fun defaultPopEnterTransition(): EnterTransition =
-    slideInHorizontally(
-        initialOffsetX = { fullWidth -> -fullWidth },
-        animationSpec = tween(700)
-    ) + fadeIn(animationSpec = tween(700))
-
-fun defaultPopExitTransition(): ExitTransition =
-    slideOutHorizontally(
-        targetOffsetX = { fullWidth -> fullWidth },
-        animationSpec = tween(700)
-    ) + fadeOut(animationSpec = tween(700))

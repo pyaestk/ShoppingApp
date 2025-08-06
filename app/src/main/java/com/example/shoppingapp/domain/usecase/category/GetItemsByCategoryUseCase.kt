@@ -1,4 +1,4 @@
-package com.example.shoppingapp.domain.usecase
+package com.example.shoppingapp.domain.usecase.category
 
 import com.example.shoppingapp.domain.repository.CategoryRepository
 

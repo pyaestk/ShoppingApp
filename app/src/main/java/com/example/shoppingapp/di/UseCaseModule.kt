@@ -1,14 +1,18 @@
 package com.example.shoppingapp.di
 
-import com.example.shoppingapp.domain.usecase.AddItemToCartUseCase
-import com.example.shoppingapp.domain.usecase.DecreaseCartItemQtyUseCase
-import com.example.shoppingapp.domain.usecase.GetBannersUseCase
-import com.example.shoppingapp.domain.usecase.GetCartItemUseCase
-import com.example.shoppingapp.domain.usecase.GetCategoryUseCase
-import com.example.shoppingapp.domain.usecase.GetItemsByCategoryUseCase
-import com.example.shoppingapp.domain.usecase.GetItemsUseCase
-import com.example.shoppingapp.domain.usecase.HomeUseCases
-import com.example.shoppingapp.domain.usecase.IncreaseCartItemQtyUseCase
+import com.example.shoppingapp.domain.usecase.cart.CartScreenUseCase
+import com.example.shoppingapp.domain.usecase.cart.DecreaseCartItemQtyUseCase
+import com.example.shoppingapp.domain.usecase.cart.GetCartItemUseCase
+import com.example.shoppingapp.domain.usecase.cart.IncreaseCartItemQtyUseCase
+import com.example.shoppingapp.domain.usecase.cart.RemoveCartItemUseCase
+import com.example.shoppingapp.domain.usecase.category.GetItemsByCategoryUseCase
+import com.example.shoppingapp.domain.usecase.detail.AddItemToCartUseCase
+import com.example.shoppingapp.domain.usecase.detail.DetailScreenUseCase
+import com.example.shoppingapp.domain.usecase.detail.GetItemDetailUseCase
+import com.example.shoppingapp.domain.usecase.home.GetBannersUseCase
+import com.example.shoppingapp.domain.usecase.home.GetCategoryUseCase
+import com.example.shoppingapp.domain.usecase.home.GetItemsUseCase
+import com.example.shoppingapp.domain.usecase.home.HomeUseCases
 import org.koin.dsl.module
 
 val UseCaseModule = module {
@@ -35,16 +39,30 @@ val UseCaseModule = module {
             addItemToCartUseCase = get()
         )
     }
+
     factory {
         GetItemsByCategoryUseCase(
             categoryRepository = get()
         )
     }
+
     factory {
         AddItemToCartUseCase(
             get()
         )
     }
+    factory {
+        GetItemDetailUseCase(
+            get()
+        )
+    }
+    factory {
+        DetailScreenUseCase(
+            getItemDetailUseCase = get(),
+            addItemToCartUseCase = get()
+        )
+    }
+
     factory {
         GetCartItemUseCase(
             get()
@@ -60,4 +78,18 @@ val UseCaseModule = module {
             get()
         )
     }
+    factory {
+        RemoveCartItemUseCase(
+            get()
+        )
+    }
+    factory {
+        CartScreenUseCase(
+            getCartItemUseCase = get(),
+            increaseCartItemQtyUseCase = get(),
+            decreaseCartItemQtyUseCase = get(),
+            removeCartItemUseCase = get()
+        )
+    }
+
 }

@@ -2,7 +2,7 @@ package com.example.shoppingapp.presentation.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppingapp.domain.usecase.GetItemsByCategoryUseCase
+import com.example.shoppingapp.domain.usecase.category.GetItemsByCategoryUseCase
 import com.example.shoppingapp.domain.util.Response
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

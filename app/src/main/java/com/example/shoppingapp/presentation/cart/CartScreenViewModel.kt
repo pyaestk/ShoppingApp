@@ -2,18 +2,14 @@ package com.example.shoppingapp.presentation.cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppingapp.domain.usecase.DecreaseCartItemQtyUseCase
-import com.example.shoppingapp.domain.usecase.GetCartItemUseCase
-import com.example.shoppingapp.domain.usecase.IncreaseCartItemQtyUseCase
+import com.example.shoppingapp.domain.usecase.cart.CartScreenUseCase
 import com.example.shoppingapp.domain.util.Response
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class CartScreenViewModel(
-    private val cartItemUseCase: GetCartItemUseCase,
-    private val increaseCartItemQtyUseCase: IncreaseCartItemQtyUseCase,
-    private val decreaseCartItemQtyUseCase: DecreaseCartItemQtyUseCase
+    private val cartScreenUseCase: CartScreenUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(CartScreenState())
     val state = _state.asStateFlow()
@@ -22,7 +18,7 @@ class CartScreenViewModel(
         getCartItems()
     }
     fun getCartItems() = viewModelScope.launch {
-        cartItemUseCase().collect { response ->
+        cartScreenUseCase.getCartItemUseCase().collect { response ->
             when (response) {
                 is Response.Error<*> -> {
                     _state.value = _state.value.copy(
@@ -58,11 +54,15 @@ class CartScreenViewModel(
             is CartScreenEvent.DecreaseQuantity -> {
                 decreaseQuantity(event.itemId)
             }
+
+            is CartScreenEvent.RemoveItem -> {
+                removeItem(event.itemId)
+            }
         }
     }
 
     private fun increaseQuantity(itemId: Int) = viewModelScope.launch {
-        increaseCartItemQtyUseCase(itemId).let { response ->
+        cartScreenUseCase.increaseCartItemQtyUseCase(itemId).let { response ->
             when(response){
                 is Response.Error<*> -> {
                     _state.value = _state.value.copy(
@@ -95,7 +95,7 @@ class CartScreenViewModel(
     }
 
     private fun decreaseQuantity(itemId: Int) = viewModelScope.launch {
-        decreaseCartItemQtyUseCase(itemId).let { response ->
+        cartScreenUseCase.decreaseCartItemQtyUseCase(itemId).let { response ->
             when(response){
                 is Response.Error<*> -> {
                     _state.value = _state.value.copy(
@@ -125,6 +125,29 @@ class CartScreenViewModel(
                 // optionally show loading
             }
         }*/
+    }
+
+    private fun removeItem(itemId: Int) = viewModelScope.launch {
+        cartScreenUseCase.removeCartItemUseCase(itemId).let { response ->
+            when(response){
+                is Response.Error<*> -> {
+                    _state.value = _state.value.copy(
+                        error = response.message  ?: "An unknown error occurred",
+                        isLoading = false
+                    )
+                }
+                is Response.Loading<*> -> {
+                    _state.value = _state.value.copy(
+                        isLoading = true,
+                        error = null
+                    )
+                }
+                is Response.Success<*> -> {
+                    getCartItems()
+                }
+            }
+
+        }
     }
 
 

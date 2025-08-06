@@ -54,7 +54,7 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
 
-        if (homeScreenState.error != null) {
+        if (homeScreenState.isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -131,10 +131,6 @@ fun HomeScreen(
             }
         }
     }
-
-
-
-
 
 }
 

@@ -1,4 +1,6 @@
-package com.example.shoppingapp.domain.usecase
+package com.example.shoppingapp.domain.usecase.home
+
+import com.example.shoppingapp.domain.usecase.detail.AddItemToCartUseCase
 
 data class HomeUseCases(
     val getBannersUseCase: GetBannersUseCase,

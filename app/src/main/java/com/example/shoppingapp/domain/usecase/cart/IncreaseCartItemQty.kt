@@ -1,12 +1,13 @@
-package com.example.shoppingapp.domain.usecase
+package com.example.shoppingapp.domain.usecase.cart
 
 import com.example.shoppingapp.domain.repository.CartRepository
 import com.example.shoppingapp.domain.util.Response
 
-class DecreaseCartItemQtyUseCase(
+
+class IncreaseCartItemQtyUseCase(
     private val cartRepository: CartRepository
 ) {
     suspend operator fun invoke(productId: Int): Response<Unit> {
-        return cartRepository.decrementCartItemQuantity(productId)
+       return cartRepository.incrementCartItemQuantity(productId)
     }
 }

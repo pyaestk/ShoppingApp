@@ -1,9 +1,11 @@
 package com.example.shoppingapp.presentation.detail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,11 +20,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +40,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,17 +55,51 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    item: ItemModel,
+    itemId: Int,
     onBackClick: () -> Unit,
     detailViewModel: DetailScreenViewModel = koinViewModel(),
 ) {
-    var selectedImageUrl by remember {
+    val state by detailViewModel.state.collectAsState()
+
+    LaunchedEffect(itemId) {
+        detailViewModel.getItemDetail(itemId)
+    }
+
+    if (state.isLoading) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = colorResource(R.color.darkBrown))
+        }
+        return
+    }
+
+    if (state.error != null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Error: ${state.error}")
+        }
+        return
+    }
+
+    val item = state.itemModel
+    if (item == null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Item not found.")
+        }
+        return
+    }
+
+
+    var selectedImageUrl by remember(item) {
         mutableStateOf(item.picUrl.first())
     }
 
-    var selectedModelIndex by remember {
+    var selectedModelIndex by remember(item) {
         mutableStateOf(0)
     }
+
+    if (item.size.isNotEmpty() && selectedModelIndex >= item.size.size) {
+        selectedModelIndex = 0 
+    }
+
 
     Column(
         modifier = modifier
@@ -104,7 +144,9 @@ fun DetailScreen(
 
             Spacer(modifier.padding(vertical = 16.dp))
 
-            SellerInfoSection(item)
+            SellerInfoSection(
+                item
+            )
 
             Spacer(modifier.padding(vertical = 8.dp))
 
@@ -148,7 +190,8 @@ fun DetailScreen(
                         .weight(1f),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.midBrown))
+                        containerColor = colorResource(R.color.midBrown)
+                    )
                 ) {
                     Text(
                         text = "Buy Now", style = MaterialTheme.typography.titleMedium
@@ -161,7 +204,8 @@ fun DetailScreen(
                             event = DetailScreenEvent.AddItemToCart(
                                 id = item.id,
                                 quantity = 1,
-                                size = item.size[selectedModelIndex]
+                                // Defensive check for item.size and selectedModelIndex
+                                size = if (item.size.isNotEmpty() && selectedModelIndex < item.size.size) item.size[selectedModelIndex] else ""
                             )
                         )
                     },
@@ -218,17 +262,35 @@ private fun SellerInfoSection(item: ItemModel) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
         ) {
-            Image(
+            /*Image(
                 painter = painterResource(R.drawable.message),
                 contentDescription = null,
                 modifier = Modifier.padding(end = 16.dp)
             )
             Image(
                 painter = painterResource(R.drawable.call), contentDescription = null
-            )
+            )*/
+            Button(
+                onClick = {},
+                modifier = Modifier,
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.white).copy(0.8f),
+                ),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = colorResource(R.color.darkBrown)
+                )
+            ) {
+                Text(
+                    text = "View Profile",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                )
+            }
         }
     }
 }
-

@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,16 +35,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shoppingapp.R
+import com.example.shoppingapp.domain.model.CartItemModel
 import com.example.shoppingapp.presentation.cart.component.CartItem
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CartScreen(
-    viewModel: CartScreenViewModel = koinViewModel()
+    viewModel: CartScreenViewModel = koinViewModel(),
+    onItemClick: (CartItemModel) -> Unit,
 ) {
 
     val state by viewModel.state.collectAsState()
-
 
     Column(
         modifier = Modifier
@@ -49,15 +53,17 @@ fun CartScreen(
             .padding(horizontal = 8.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-        ){
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+        ) {
             Image(
                 painter = painterResource(
                     R.drawable.ic_delete,
                 ),
                 contentDescription = "Back",
                 modifier = Modifier
-                    .clickable {  }
+                    .clickable { }
                     .padding(end = 16.dp)
                     .padding(8.dp)
                     .align(Alignment.TopEnd),
@@ -72,135 +78,166 @@ fun CartScreen(
             )
         }
 
-        if (state.cartItems.isEmpty()) {
-            Text(
-                text = "Cart is Empty",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = colorResource(R.color.darkBrown))
+            }
         } else {
-            state.cartItems.forEachIndexed { index, cartItem ->
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-                CartItem(
-                    index = index,
-                    cartItem = cartItem,
-                    onIncrement = {
-                        viewModel.onEvent(CartScreenEvent.IncreaseQuantity(cartItem.itemId))
-                    },
-                    onDecrement = {
-                        viewModel.onEvent(CartScreenEvent.DecreaseQuantity(cartItem.itemId))
-                    },
-                    onRemove = {}
-                )
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+            if (state.cartItems.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Cart is Empty",
+                    )
+                }
+
             }
 
-            Spacer(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = "Item total:",
-                    color = Color.Black,
-                    fontSize = 14.sp
+                state.cartItems.forEachIndexed { index, cartItem ->
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    CartItem(
+                        index = index,
+                        cartItem = cartItem,
+                        onIncrement = {
+                            viewModel.onEvent(CartScreenEvent.IncreaseQuantity(cartItem.itemId))
+                        },
+                        onDecrement = {
+                            viewModel.onEvent(CartScreenEvent.DecreaseQuantity(cartItem.itemId))
+                        },
+                        onRemove = {
+                            viewModel.onEvent(CartScreenEvent.RemoveItem(cartItem.itemId))
+                        },
+                        onItemClick = {
+                            onItemClick(it)
+                        }
+                    )
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
                 )
 
-                Text(
-                    text = "${state.cartItems.sumOf { it.quantity }}",
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End,
-                    color = colorResource(R.color.darkBrown),
-                    fontSize = 14.sp
-                )
-            }
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Item total:",
+                        color = Color.Black,
+                        fontSize = 14.sp
+                    )
 
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Sub total:",
-                    color = Color.Black,
-                    fontSize = 14.sp
+                    Text(
+                        text = "${state.cartItems.sumOf { it.quantity }}",
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.End,
+                        color = colorResource(R.color.darkBrown),
+                        fontSize = 14.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Sub total:",
+                        color = Color.Black,
+                        fontSize = 14.sp
+                    )
+
+                    Text(
+                        text = "$${state.totalPrice}",
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.End,
+                        color = colorResource(R.color.darkBrown),
+                        fontSize = 14.sp
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Delivery fee:",
+                        color = Color.Black,
+                        fontSize = 14.sp
+                    )
+
+                    Text(
+                        text = "$${10.0}",
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.End,
+                        color = colorResource(R.color.darkBrown),
+                        fontSize = 14.sp
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                        .background(Color.Gray.copy(0.2f))
+                        .height(1.dp)
                 )
 
-                Text(
-                    text = "$${state.totalPrice}",
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End,
-                    color = colorResource(R.color.darkBrown),
-                    fontSize = 14.sp
-                )
-            }
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Total Price:",
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black,
+                        fontSize = 16.sp
+                    )
 
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Delivery fee:",
-                    color = Color.Black,
-                    fontSize = 14.sp
-                )
+                    Text(
+                        text = "$${calculateTotalPrice(state.totalPrice)}",
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.End,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(R.color.darkBrown),
+                        fontSize = 16.sp
+                    )
+                }
 
-                Text(
-                    text = "$${10.0}",
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End,
-                    color = colorResource(R.color.darkBrown),
-                    fontSize = 14.sp
-                )
-            }
+                Button(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    border = BorderStroke(2.dp, colorResource(R.color.midBrown))
+                ) {
+                    Text(
+                        text = "Check Out (${state.cartItems.sumOf { it.quantity }})",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = colorResource(R.color.black),
+                    )
+                }
 
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-                    .background(Color.Gray.copy(0.2f))
-                    .height(1.dp)
-            )
-
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Total Price:",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black,
-                    fontSize = 16.sp
-                )
-
-                Text(
-                    text = "$${calculateTotalPrice(state.totalPrice)}",
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.darkBrown),
-                    fontSize = 16.sp
-                )
-            }
-
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent),
-                border = BorderStroke(2.dp, colorResource(R.color.midBrown))
-            ) {
-                Text(
-                    text = "Check Out (${state.cartItems.sumOf { it.quantity }})", style = MaterialTheme.typography.titleMedium,
-                    color = colorResource(R.color.black),
-                )
             }
         }
 

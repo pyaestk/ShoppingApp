@@ -1,5 +1,6 @@
 package com.example.shoppingapp.presentation.cart.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +41,7 @@ import com.example.shoppingapp.domain.model.CartItemModel
 fun CartItem(
     index: Int,
     cartItem: CartItemModel,
+    onItemClick: (CartItemModel) -> Unit,
     onIncrement: (CartItemModel) -> Unit,
     onDecrement: (CartItemModel) -> Unit,
     onRemove: (CartItemModel) -> Unit
@@ -45,6 +50,11 @@ fun CartItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
+            .clickable(
+                onClick = {
+                    onItemClick(cartItem)
+                }
+            )
     ) {
 
         Text(
@@ -96,15 +106,15 @@ fun CartItem(
             modifier = Modifier.fillMaxHeight()
         ) {
 
-            /*IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
+            IconButton(
+                modifier = Modifier.align(Alignment.TopEnd).size(20.dp),
                 onClick = { onRemove(cartItem) }) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_remove),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(Color.Red)
+                    colorFilter = ColorFilter.tint(Color.Gray),
                 )
-            }*/
+            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -27,8 +27,6 @@ val viewModelModule = module {
     viewModel {
         CartScreenViewModel(
             get(),
-            get(),
-            get()
         )
     }
 }

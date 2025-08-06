@@ -2,7 +2,7 @@ package com.example.shoppingapp.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppingapp.domain.usecase.HomeUseCases
+import com.example.shoppingapp.domain.usecase.home.HomeUseCases
 import com.example.shoppingapp.domain.util.Response
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
