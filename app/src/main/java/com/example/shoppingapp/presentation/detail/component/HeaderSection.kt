@@ -3,6 +3,7 @@ package com.example.shoppingapp.presentation.detail.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,13 +13,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.example.shoppingapp.R
 
 @Composable
@@ -36,7 +38,7 @@ fun HeaderSection(
     ) {
         val (back, fav, mainImage, thumbnail) = createRefs()
 
-        Image(
+        /*Image(
             painter = rememberImagePainter(selectedImageUrl),
             contentDescription = null,
             contentScale = ContentScale.Crop,
@@ -44,7 +46,24 @@ fun HeaderSection(
                 .fillMaxSize()
                 .background(
                     color = colorResource(R.color.brown),
-                    /*shape = RoundedCornerShape(16.dp)*/
+                    *//*shape = RoundedCornerShape(16.dp)*//*
+                )
+                .constrainAs(mainImage) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+        )*/
+
+        AsyncImage(
+            model = selectedImageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = colorResource(R.color.brown),
                 )
                 .constrainAs(mainImage) {
                     top.linkTo(parent.top)
@@ -54,35 +73,39 @@ fun HeaderSection(
                 }
         )
 
-        Image(
-            painter = painterResource(R.drawable.back),
-            contentDescription = null,
+
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .clickable(
-                    onClick = onBackClick
-                )
+                .fillMaxWidth()
+                .statusBarsPadding()
                 .constrainAs(back) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 }
-                .statusBarsPadding()
-        )
+        ){
+            Image(
+                painter = painterResource(R.drawable.back),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable(
+                        onClick = onBackClick
+                    )
+                    .align(Alignment.TopStart)
 
-        Image(
-            painter = painterResource(R.drawable.fav_icon),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .clickable(
-                    onClick = { }
-                )
-                .constrainAs(fav) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }
-                .statusBarsPadding()
-        )
+            )
+
+            Image(
+                painter = painterResource(R.drawable.fav_icon),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable(
+                        onClick = { }
+                    )
+                    .align(Alignment.TopEnd)
+            )
+        }
 
         LazyRow(
             modifier = Modifier

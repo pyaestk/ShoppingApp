@@ -1,9 +1,5 @@
 package com.example.shoppingapp.presentation.navigation
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +25,7 @@ import com.example.shoppingapp.presentation.category.CategoryScreen
 import com.example.shoppingapp.presentation.detail.DetailScreen
 import com.example.shoppingapp.presentation.home.HomeScreen
 import com.example.shoppingapp.presentation.navigation.component.BottomNavigationBar
+import com.example.shoppingapp.presentation.profile.ProfileScreen
 
 @Composable
 fun BottomNavigation() {
@@ -43,7 +40,6 @@ fun BottomNavigation() {
         listOf(
             BottomNavItems.Home,
             BottomNavItems.Cart,
-            BottomNavItems.Favorite,
             BottomNavItems.Order,
             BottomNavItems.Profile
         )
@@ -53,19 +49,21 @@ fun BottomNavigation() {
     var selectedItem by rememberSaveable {
         mutableStateOf(0)
     }
-    selectedItem = when (backstackState?.destination?.route) {
+
+    val route = backstackState?.destination?.route
+
+    selectedItem = when (route) {
         NavRoute.HomeScreen.route -> 0
         NavRoute.CartScreen.route -> 1
-        NavRoute.FavoriteScreen.route -> 2
-        NavRoute.OrderScreen.route -> 3
-        NavRoute.ProfileScreen.route -> 4
-        else -> 0
+        NavRoute.OrderScreen.route -> 2
+        NavRoute.ProfileScreen.route -> 3
+        else -> selectedItem
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (showBottomNav.value) {
+            if (showBottomNav.value){
                 BottomNavigationBar(
                     selectedItem = selectedItem,
                     items = items,
@@ -88,24 +86,18 @@ fun BottomNavigation() {
         NavHost(
             navController = navController,
             startDestination = NavRoute.HomeScreen.route,
-            modifier = if (showBottomNav.value) {
-                Modifier.padding(paddingValues)
-            } else {
-                Modifier
-            }
+            modifier = Modifier,
         ) {
+
             composable(
                 NavRoute.HomeScreen.route,
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
             ) {
                 HomeScreen(
+                    paddingValues = paddingValues,
                     navigateToDetail = { item ->
                         navigateToDetails(
                             navController = navController,
-                            itemId = item.id
+                            itemId = item.id,
                         )
                     },
                     navigateToCategory = { category ->
@@ -119,68 +111,46 @@ fun BottomNavigation() {
             }
             composable(
                 NavRoute.CartScreen.route,
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
-                ) {
+            ) {
                 CartScreen(
+                    paddingValues = paddingValues,
                     onItemClick = { item ->
                         navigateToDetails(
                             navController = navController,
-                            itemId = item.itemId
+                            itemId = item.itemId,
                         )
                     }
                 )
                 showBottomNav.value = true
             }
-            composable(
-                NavRoute.FavoriteScreen.route,
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
-            ) {
-                Box() {
 
-                }
-                showBottomNav.value = true
-            }
             composable(
                 NavRoute.OrderScreen.route,
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
             ) {
-                Box() {
+                Box(
+                    modifier = Modifier.padding(paddingValues)
+                ) {
 
                 }
                 showBottomNav.value = true
             }
             composable(
                 NavRoute.ProfileScreen.route,
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
-            ) {
-                Box() {
 
-                }
+                ) {
+                ProfileScreen(
+                    paddingValues = paddingValues
+                )
                 showBottomNav.value = true
             }
             composable(
                 NavRoute.DetailScreen.route, // Use the route directly from NavRoute
                 arguments = listOf(navArgument("itemId") {
                     type = NavType.IntType
-                }),
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+                })
             ) { backStackEntry ->
                 val itemId = backStackEntry.arguments?.getInt("itemId") ?: return@composable
+
                 DetailScreen(
                     itemId = itemId,
                     onBackClick = { navController.navigateUp() }
@@ -189,11 +159,7 @@ fun BottomNavigation() {
             }
             composable(
                 NavRoute.CategoryScreen.route,
-                enterTransition = { slideInHorizontally { it } + fadeIn() },
-                exitTransition = { slideOutHorizontally { -it } + fadeOut() },
-                popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
-                popExitTransition = { slideOutHorizontally { it } + fadeOut() }
-                ) {
+            ) {
                 navController.previousBackStackEntry?.savedStateHandle?.get<CategoryModel>("category")
                     ?.let { category ->
                         CategoryScreen(
@@ -204,7 +170,7 @@ fun BottomNavigation() {
                             onItemClick = { item ->
                                 navigateToDetails(
                                     navController = navController,
-                                    itemId = item.id
+                                    itemId = item.id,
                                 )
                             }
 
@@ -234,8 +200,6 @@ private fun navigateToCategory(navController: NavController, categoryModel: Cate
 sealed class BottomNavItems(val route: String, val title: String, val icon: Int) {
     object Home : BottomNavItems(NavRoute.HomeScreen.route, "Home", icon = R.drawable.btn_1)
     object Cart : BottomNavItems(NavRoute.CartScreen.route, "Cart", icon = R.drawable.btn_2)
-    object Favorite :
-        BottomNavItems(NavRoute.FavoriteScreen.route, "Favorite", icon = R.drawable.btn_3)
 
     object Order : BottomNavItems(NavRoute.OrderScreen.route, "Order", icon = R.drawable.btn_4)
     object Profile :

@@ -68,7 +68,7 @@ fun CartItem(
                 ),
             color = Color.Black
         )
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(10.dp))
         AsyncImage(
             model = cartItem.picUrl,
             contentDescription = null,
@@ -77,7 +77,7 @@ fun CartItem(
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(10.dp))
         Column(
             modifier = Modifier
                 .weight(1f)

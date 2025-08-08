@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +42,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CartScreen(
+    paddingValues: PaddingValues,
     viewModel: CartScreenViewModel = koinViewModel(),
     onItemClick: (CartItemModel) -> Unit,
 ) {
@@ -50,12 +52,12 @@ fun CartScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp)
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
         ) {
             Image(
                 painter = painterResource(
@@ -64,19 +66,18 @@ fun CartScreen(
                 contentDescription = "Back",
                 modifier = Modifier
                     .clickable { }
-                    .padding(end = 16.dp)
-                    .padding(8.dp)
-                    .align(Alignment.TopEnd),
+                    .align(Alignment.TopEnd).padding(end = 6.dp),
                 colorFilter = ColorFilter.tint(Color.Red)
             )
             Text(
                 text = "Your Cart",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center),
-                maxLines = 1
+                maxLines = 1,
             )
         }
+
+        Spacer(modifier = Modifier.padding(vertical = 16.dp))
 
         if (state.isLoading) {
             Box(
@@ -86,28 +87,25 @@ fun CartScreen(
             ) {
                 CircularProgressIndicator(color = colorResource(R.color.darkBrown))
             }
-        } else {
-
-            if (state.cartItems.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Cart is Empty",
-                    )
-                }
-
+        }
+        if (state.cartItems.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Cart is Empty",
+                )
             }
 
+        } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
                 state.cartItems.forEachIndexed { index, cartItem ->
-                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
                     CartItem(
                         index = index,
                         cartItem = cartItem,
@@ -240,6 +238,7 @@ fun CartScreen(
 
             }
         }
+
 
     }
 

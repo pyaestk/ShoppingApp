@@ -65,6 +65,27 @@ fun DetailScreen(
         detailViewModel.getItemDetail(itemId)
     }
 
+    val item = state.itemModel
+    if (item == null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Item not found.")
+        }
+        return
+    }
+
+
+    var selectedImageUrl by remember(item.id) {
+        mutableStateOf(item.picUrl.first())
+    }
+
+    var selectedModelIndex by remember(item.id) {
+        mutableStateOf(0)
+    }
+
+    if (item.size.isNotEmpty() && selectedModelIndex >= item.size.size) {
+        selectedModelIndex = 0 
+    }
+
     if (state.isLoading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = colorResource(R.color.darkBrown))
@@ -78,28 +99,6 @@ fun DetailScreen(
         }
         return
     }
-
-    val item = state.itemModel
-    if (item == null) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Item not found.")
-        }
-        return
-    }
-
-
-    var selectedImageUrl by remember(item) {
-        mutableStateOf(item.picUrl.first())
-    }
-
-    var selectedModelIndex by remember(item) {
-        mutableStateOf(0)
-    }
-
-    if (item.size.isNotEmpty() && selectedModelIndex >= item.size.size) {
-        selectedModelIndex = 0 
-    }
-
 
     Column(
         modifier = modifier

@@ -49,7 +49,7 @@ class CartRemoteDataSource(
         val firestore = FirebaseFirestore.getInstance()
         val realtimeDb = firebaseDatabase.getReference("Items")
 
-        trySend(Response.Loading())
+        trySend(Response.Loading()).isSuccess
 
         // First: listen to cart items from Firestore
         val cartRef = firestore

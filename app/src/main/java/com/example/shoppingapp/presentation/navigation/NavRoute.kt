@@ -12,7 +12,7 @@ sealed class NavRoute(
     object ProfileScreen: NavRoute("profile")
 
     object DetailScreen : NavRoute("detail/{itemId}") {
-        fun createRoute(itemId: Int) = "detail/$itemId"
+        fun createRoute(itemId: Int) = "detail/${itemId}"
     }
     object CategoryScreen: NavRoute("category")
 }

@@ -113,9 +113,9 @@ fun CategoryHeader(category: CategoryModel, onBackClick: () -> Unit) {
             contentDescription = "Back",
             modifier = Modifier
                 .clickable { onBackClick() }
-                .padding(end = 16.dp)
-                .align(Alignment.TopStart)
+                .align(Alignment.TopStart),
         )
+
         Text(
             text = category.title,
             style = MaterialTheme.typography.titleLarge,

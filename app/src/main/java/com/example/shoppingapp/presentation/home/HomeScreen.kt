@@ -38,6 +38,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues,
     navigateToDetail: (ItemModel) -> Unit,
     navigateToCategory: (CategoryModel) -> Unit,
     mainViewModel: HomeScreenViewModel = koinViewModel()
@@ -45,7 +46,9 @@ fun HomeScreen(
 
     val homeScreenState by mainViewModel.homeScreenState.collectAsState()
 
-    Column {
+    Column(
+        modifier = modifier.padding(paddingValues)
+    ) {
         ProfileHeader("Dylan")
         Spacer(modifier = Modifier.height(16.dp))
         SearchBar(
