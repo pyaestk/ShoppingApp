@@ -1,6 +1,7 @@
 package com.example.shoppingapp
 
 import android.app.Application
+import com.example.shoppingapp.di.LocalRemoteDatasourceModule
 import com.example.shoppingapp.di.RemoteDatasourceModule
 import com.example.shoppingapp.di.RepositoryModule
 import com.example.shoppingapp.di.UseCaseModule
@@ -20,7 +21,8 @@ class ShoppingApplication: Application() {
                     RepositoryModule,
                     UseCaseModule,
                     RemoteDatasourceModule,
-                    viewModelModule
+                    viewModelModule,
+                    LocalRemoteDatasourceModule
                 )
             )
         }

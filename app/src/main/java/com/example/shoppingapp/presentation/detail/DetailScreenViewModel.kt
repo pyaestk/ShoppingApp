@@ -2,6 +2,7 @@ package com.example.shoppingapp.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppingapp.domain.model.ItemModel
 import com.example.shoppingapp.domain.usecase.detail.DetailScreenUseCase
 import com.example.shoppingapp.domain.util.Response
 import com.example.shoppingapp.presentation.detail.component.DetailScreenState
@@ -32,6 +33,24 @@ class DetailScreenViewModel(
             DetailScreenEvent.RemoveSideEffect -> {
 
             }
+
+            is DetailScreenEvent.AddRemoveItemToFav -> {
+                viewModelScope.launch {
+                    /*try {
+
+                    } catch () {
+
+                    }*/
+
+                    val item = detailScreenUseCase.getFavItemByIDUseCase(event.itemModel.id)
+                    if (item != null) {
+                        deleteItem(event.itemModel)
+                    } else {
+                        upsertItem(event.itemModel)
+                    }
+
+                }
+            }
         }
     }
 
@@ -52,6 +71,16 @@ class DetailScreenViewModel(
                     }
                 }.collect()
         }
+    }
+
+    private suspend fun upsertItem(itemModel: ItemModel) {
+        detailScreenUseCase.addItemToFavUseCase(itemModel)
+//        sideEffect = UIComponent.Toast("Article Bookmarked")
+    }
+
+    private suspend fun deleteItem(itemModel: ItemModel) {
+        detailScreenUseCase.removeItemFromFavUseCase(itemModel)
+//        sideEffect = UIComponent.Toast("Article Unbookmarked")
     }
 
 }

@@ -28,7 +28,8 @@ fun HeaderSection(
     selectedImageUrl: String,
     imageUrls: List<String>,
     onBackClick: () -> Unit,
-    onImageSelected: (String) -> Unit
+    onImageSelected: (String) -> Unit,
+    onFavClick: () -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -101,7 +102,7 @@ fun HeaderSection(
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable(
-                        onClick = { }
+                        onClick = onFavClick
                     )
                     .align(Alignment.TopEnd)
             )

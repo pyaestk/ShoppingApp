@@ -46,6 +46,8 @@ fun CartItem(
     onDecrement: (CartItemModel) -> Unit,
     onRemove: (CartItemModel) -> Unit
 ) {
+
+//    var checked by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,6 +70,12 @@ fun CartItem(
                 ),
             color = Color.Black
         )
+        /*Checkbox(
+            checked = checked,
+            onCheckedChange = {
+                checked = it
+            },
+        )*/
         Spacer(modifier = Modifier.size(10.dp))
         AsyncImage(
             model = cartItem.picUrl,
@@ -107,7 +115,9 @@ fun CartItem(
         ) {
 
             IconButton(
-                modifier = Modifier.align(Alignment.TopEnd).size(20.dp),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(20.dp),
                 onClick = { onRemove(cartItem) }) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_remove),

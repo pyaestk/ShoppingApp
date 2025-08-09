@@ -3,7 +3,6 @@ package com.example.shoppingapp.presentation.navigation.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
@@ -61,7 +60,7 @@ fun BottomNavigationBar(
                     unselectedIconColor = Color.White.copy(alpha = 0.1f),
                     unselectedTextColor = Color.White.copy(alpha = 0.1f),
                     selectedIndicatorColor = Color.Transparent
-                )
+                ),
             )
         }
         Spacer(modifier = Modifier.width(8.dp))

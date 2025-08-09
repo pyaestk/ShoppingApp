@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.shoppingapp.R
 import com.example.shoppingapp.presentation.profile.component.OrderInfoBoxes
 import com.example.shoppingapp.presentation.profile.component.SettingItems
@@ -121,7 +122,15 @@ fun ProfileScreen(
             )
         }
 
-
+        Text(
+            text = "General",
+            modifier = Modifier.padding(
+                horizontal = 16.dp
+            ),
+            color = Color.Gray,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
         SettingItems(
             modifier = Modifier
                 .padding(horizontal = 16.dp)

@@ -1,8 +1,6 @@
 package com.example.shoppingapp.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +21,7 @@ import com.example.shoppingapp.domain.model.CategoryModel
 import com.example.shoppingapp.presentation.cart.CartScreen
 import com.example.shoppingapp.presentation.category.CategoryScreen
 import com.example.shoppingapp.presentation.detail.DetailScreen
+import com.example.shoppingapp.presentation.fav.FavScreen
 import com.example.shoppingapp.presentation.home.HomeScreen
 import com.example.shoppingapp.presentation.navigation.component.BottomNavigationBar
 import com.example.shoppingapp.presentation.profile.ProfileScreen
@@ -39,8 +38,8 @@ fun BottomNavigation() {
     val items = remember {
         listOf(
             BottomNavItems.Home,
+            BottomNavItems.Favorite,
             BottomNavItems.Cart,
-            BottomNavItems.Order,
             BottomNavItems.Profile
         )
     }
@@ -54,8 +53,8 @@ fun BottomNavigation() {
 
     selectedItem = when (route) {
         NavRoute.HomeScreen.route -> 0
-        NavRoute.CartScreen.route -> 1
-        NavRoute.OrderScreen.route -> 2
+        NavRoute.FavoriteScreen.route -> 1
+        NavRoute.CartScreen.route -> 2
         NavRoute.ProfileScreen.route -> 3
         else -> selectedItem
     }
@@ -125,13 +124,20 @@ fun BottomNavigation() {
             }
 
             composable(
-                NavRoute.OrderScreen.route,
+                NavRoute.FavoriteScreen.route,
             ) {
-                Box(
-                    modifier = Modifier.padding(paddingValues)
-                ) {
-
-                }
+                FavScreen(
+                    paddingValues = paddingValues,
+                    onItemClick = { item ->
+                        navigateToDetails(
+                            navController = navController,
+                            itemId = item.id,
+                        )
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
                 showBottomNav.value = true
             }
             composable(
@@ -201,7 +207,7 @@ sealed class BottomNavItems(val route: String, val title: String, val icon: Int)
     object Home : BottomNavItems(NavRoute.HomeScreen.route, "Home", icon = R.drawable.btn_1)
     object Cart : BottomNavItems(NavRoute.CartScreen.route, "Cart", icon = R.drawable.btn_2)
 
-    object Order : BottomNavItems(NavRoute.OrderScreen.route, "Order", icon = R.drawable.btn_4)
+    object Favorite : BottomNavItems(NavRoute.FavoriteScreen.route, "Favorite", icon = R.drawable.btn_3)
     object Profile :
         BottomNavItems(NavRoute.ProfileScreen.route, "Profile", icon = R.drawable.btn_5)
 }

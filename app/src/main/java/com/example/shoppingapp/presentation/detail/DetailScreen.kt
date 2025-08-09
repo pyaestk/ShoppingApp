@@ -110,9 +110,15 @@ fun DetailScreen(
             selectedImageUrl = selectedImageUrl,
             imageUrls = item.picUrl,
             onBackClick = onBackClick,
+            onImageSelected = {
+                selectedImageUrl = it
+            }
         ) {
-            selectedImageUrl = it
+            detailViewModel.onEvent(
+                event = DetailScreenEvent.AddRemoveItemToFav(item)
+            )
         }
+
 
         //info section
         Column(
@@ -210,11 +216,10 @@ fun DetailScreen(
                     },
                     modifier = Modifier
                         .width(64.dp)
-                        .height(48.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.LightGray.copy(alpha = 0.4f)),
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Transparent
+                        containerColor = Color.Transparent,
                     )
                 ) {
                     Image(

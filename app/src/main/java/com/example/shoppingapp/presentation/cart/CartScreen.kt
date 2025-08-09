@@ -53,7 +53,7 @@ fun CartScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp, horizontal = 16.dp)
     ) {
         Box(
             modifier = Modifier
@@ -122,7 +122,7 @@ fun CartScreen(
                             onItemClick(it)
                         }
                     )
-                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    Spacer(modifier = Modifier.padding(vertical = 16.dp))
                 }
 
                 Spacer(
@@ -131,97 +131,13 @@ fun CartScreen(
                         .padding(vertical = 8.dp)
                 )
 
-                Row(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Item total:",
-                        color = Color.Black,
-                        fontSize = 14.sp
-                    )
-
-                    Text(
-                        text = "${state.cartItems.sumOf { it.quantity }}",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        color = colorResource(R.color.darkBrown),
-                        fontSize = 14.sp
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Sub total:",
-                        color = Color.Black,
-                        fontSize = 14.sp
-                    )
-
-                    Text(
-                        text = "$${state.totalPrice}",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        color = colorResource(R.color.darkBrown),
-                        fontSize = 14.sp
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Delivery fee:",
-                        color = Color.Black,
-                        fontSize = 14.sp
-                    )
-
-                    Text(
-                        text = "$${10.0}",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        color = colorResource(R.color.darkBrown),
-                        fontSize = 14.sp
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                        .background(Color.Gray.copy(0.2f))
-                        .height(1.dp)
-                )
-
-                Row(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Total Price:",
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    )
-
-                    Text(
-                        text = "$${calculateTotalPrice(state.totalPrice)}",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(R.color.darkBrown),
-                        fontSize = 16.sp
-                    )
-                }
+                PriceInformationSection(state)
 
                 Button(
                     onClick = {},
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 16.dp)
+                        .padding(vertical = 16.dp)
                         .height(48.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -240,6 +156,96 @@ fun CartScreen(
         }
 
 
+    }
+
+}
+
+@Composable
+fun PriceInformationSection(state: CartScreenState) {
+    Row(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Item total:",
+            color = Color.Black,
+            fontSize = 14.sp
+        )
+
+        Text(
+            text = "${state.cartItems.sumOf { it.quantity }}",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            color = colorResource(R.color.darkBrown),
+            fontSize = 14.sp
+        )
+    }
+
+    Row(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Sub total:",
+            color = Color.Black,
+            fontSize = 14.sp
+        )
+
+        Text(
+            text = "$${state.totalPrice}",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            color = colorResource(R.color.darkBrown),
+            fontSize = 14.sp
+        )
+    }
+
+    Row(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Delivery fee:",
+            color = Color.Black,
+            fontSize = 14.sp
+        )
+
+        Text(
+            text = "$${10.0}",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            color = colorResource(R.color.darkBrown),
+            fontSize = 14.sp
+        )
+    }
+
+    Spacer(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 16.dp)
+            .background(Color.Gray.copy(0.2f))
+            .height(1.dp)
+    )
+
+    Row(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Total Price:",
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+            fontSize = 16.sp
+        )
+
+        Text(
+            text = "$${calculateTotalPrice(state.totalPrice)}",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(R.color.darkBrown),
+            fontSize = 16.sp
+        )
     }
 
 }

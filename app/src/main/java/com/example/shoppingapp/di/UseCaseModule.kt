@@ -7,8 +7,13 @@ import com.example.shoppingapp.domain.usecase.cart.IncreaseCartItemQtyUseCase
 import com.example.shoppingapp.domain.usecase.cart.RemoveCartItemUseCase
 import com.example.shoppingapp.domain.usecase.category.GetItemsByCategoryUseCase
 import com.example.shoppingapp.domain.usecase.detail.AddItemToCartUseCase
+import com.example.shoppingapp.domain.usecase.detail.AddItemToFavUseCase
 import com.example.shoppingapp.domain.usecase.detail.DetailScreenUseCase
+import com.example.shoppingapp.domain.usecase.detail.GetFavItemByIDUseCase
 import com.example.shoppingapp.domain.usecase.detail.GetItemDetailUseCase
+import com.example.shoppingapp.domain.usecase.detail.RemoveItemFromFavUseCase
+import com.example.shoppingapp.domain.usecase.fav.FavScreenUseCase
+import com.example.shoppingapp.domain.usecase.fav.GetFavItemsUseCase
 import com.example.shoppingapp.domain.usecase.home.GetBannersUseCase
 import com.example.shoppingapp.domain.usecase.home.GetCategoryUseCase
 import com.example.shoppingapp.domain.usecase.home.GetItemsUseCase
@@ -57,9 +62,27 @@ val UseCaseModule = module {
         )
     }
     factory {
+        AddItemToFavUseCase(
+            get()
+        )
+    }
+    factory {
+        RemoveItemFromFavUseCase(
+            get()
+        )
+    }
+    factory {
+        GetFavItemByIDUseCase(
+            get()
+        )
+    }
+    factory {
         DetailScreenUseCase(
             getItemDetailUseCase = get(),
-            addItemToCartUseCase = get()
+            addItemToCartUseCase = get(),
+            addItemToFavUseCase = get(),
+            removeItemFromFavUseCase = get(),
+            getFavItemByIDUseCase = get()
         )
     }
 
@@ -89,6 +112,17 @@ val UseCaseModule = module {
             increaseCartItemQtyUseCase = get(),
             decreaseCartItemQtyUseCase = get(),
             removeCartItemUseCase = get()
+        )
+    }
+
+    factory {
+        GetFavItemsUseCase(
+            get()
+        )
+    }
+    factory {
+        FavScreenUseCase(
+            getFavItemsUseCase = get()
         )
     }
 

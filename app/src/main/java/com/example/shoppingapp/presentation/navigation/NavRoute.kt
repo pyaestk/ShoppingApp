@@ -8,7 +8,6 @@ sealed class NavRoute(
     object HomeScreen: NavRoute("home")
     object CartScreen: NavRoute("cart")
     object FavoriteScreen: NavRoute("favorite")
-    object OrderScreen: NavRoute("orders")
     object ProfileScreen: NavRoute("profile")
 
     object DetailScreen : NavRoute("detail/{itemId}") {
